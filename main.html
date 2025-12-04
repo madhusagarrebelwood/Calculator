@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .calculator {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 350px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .display {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            text-align: right;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            min-height: 60px;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        button {
+            padding: 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        button:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .operator {
+            background: #667eea;
+            color: white;
+        }
+        
+        .operator:hover {
+            background: #5568d3;
+        }
+        
+        .equals {
+            background: #4CAF50;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .equals:hover {
+            background: #45a049;
+        }
+        
+        .clear {
+            background: #f44336;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .clear:hover {
+            background: #da190b;
+        }
+        
+        .error {
+            color: #f44336;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 400px) {
+            .calculator {
+                padding: 15px;
+            }
+            
+            button {
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .display {
+                font-size: 20px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Simple Calculator</h1>
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="setOperation('/')">/</button>
+            
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="setOperation('*')">*</button>
+            
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="setOperation('-')">-</button>
+            
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+            <button class="operator" onclick="setOperation('+')">+</button>
+            
+            <button class="clear" onclick="clearDisplay()">Clear</button>
+        </div>
+    </div>
+
+    <script>
+        // Java-style calculator logic implemented in JavaScript
+        // This mimics Java syntax as closely as possible
+        
+        let currentNumber = "";
+        let previousNumber = "";
+        let operation = "";
+        
+        function appendNumber(num) {
+            if (num == "." && currentNumber.indexOf(".") != -1) {
+                return;
+            }
+            currentNumber = currentNumber + num;
+            updateDisplay();
+        }
+        
+        function setOperation(op) {
+            if (currentNumber == "") {
+                return;
+            }
+            if (previousNumber != "") {
+                calculate();
+            }
+            operation = op;
+            previousNumber = currentNumber;
+            currentNumber = "";
+        }
+        
+        function calculate() {
+            if (previousNumber == "" || currentNumber == "") {
+                return;
+            }
+            
+            var num1 = parseFloat(previousNumber);
+            var num2 = parseFloat(currentNumber);
+            var result = 0;
+            
+            // Java-style switch case for operations
+            if (operation == "+") {
+                result = add(num1, num2);
+            } else if (operation == "-") {
+                result = subtract(num1, num2);
+            } else if (operation == "*") {
+                result = multiply(num1, num2);
+            } else if (operation == "/") {
+                // Division by zero error handling
+                if (num2 == 0) {
+                    document.getElementById("display").innerHTML = 
+                        "<span class='error'>Error: Cannot divide by zero!</span>";
+                    currentNumber = "";
+                    previousNumber = "";
+                    operation = "";
+                    return;
+                }
+                result = divide(num1, num2);
+            }
+            
+            currentNumber = result.toString();
+            operation = "";
+            previousNumber = "";
+            updateDisplay();
+        }
+        
+        // Java-style methods for basic operations
+        function add(a, b) {
+            return a + b;
+        }
+        
+        function subtract(a, b) {
+            return a - b;
+        }
+        
+        function multiply(a, b) {
+            return a * b;
+        }
+        
+        function divide(a, b) {
+            return a / b;
+        }
+        
+        function clearDisplay() {
+            currentNumber = "";
+            previousNumber = "";
+            operation = "";
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            let display = document.getElementById("display");
+            if (currentNumber == "") {
+                display.textContent = "0";
+            } else {
+                display.textContent = currentNumber;
+            }
+        }
+    </script>
+</body>
+</html>
